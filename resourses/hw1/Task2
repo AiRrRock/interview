@@ -1,0 +1,81 @@
+// Не ошибка но наверное стоит писать правильные существующие слова в том случае если они есть Movable
+interface Moveable {
+    void move();
+}
+// Не ошибка но наверное стоит писать правильные существующие слова в именах в том случае если они есть Stoppable
+interface Stopable {
+    void stop();
+}
+
+// Тут можно создать конструктор, но сие лишь хотелка. Не ошибка
+// Также наверное стоило бы чтобы этот класс имплементировал интерфейсы (опять хотелка не бак)
+abstract class Car {
+    // Не стоит так , лучше private
+    public Engine engine;
+    private String color;
+    private String name;
+
+    // Похоже что ошибка, так как снаружи пакета старт не позвать, хотя может и не ошибка, тут от уровня задумки автора
+    protected void start() {
+        System.out.println("Car starting");
+    }
+
+     // Сие не баг только если все детии живут в 1м месте, и всеь код что этот метод использует живет в том же пакете, что врядли. public
+    abstract void open();
+
+    // Не баг, но было бы круто если бы везеде был либо this, либо без него. Более консистентный код
+    public Engine getEngine() {
+        return engine;
+    }
+
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// Похоже на баг, но опять хотелка, чтобы имплементировало интерфейс Stopable иначе не остановимая машина, но с т.зр. кода если так хотим то ок.
+class LightWeightCar extends Car implements Moveable{
+
+    @Override
+    void open() {
+        System.out.println("Car is open");
+    }
+
+    @Override
+    public void move() {
+        System.out.println("Car is moving");
+    }
+
+}
+// Убрать 0
+0
+// не имплементиоован метода open(), либо класс abstract должен быть, либо имплементировать
+// Так наследоваться нельзя, в джаве нет множественного наследования от классов, только имплеентация множества интерфейсов, но для них ключевое слово другое
+// должно быть class Lorry extends Car implements Moveable, Stopable
+class Lorry extends Car, Moveable, Stopable{
+
+    public void move(){
+        System.out.println("Car is moving");
+    }
+
+    public void stop(){
+        System.out.println("Car is stop");
+    }
+}
+// По всему файлу область видимости классов и интерфейсов default. Что странно если мы хотим использовать то что есть
