@@ -1,0 +1,61 @@
+CREATE TABLE `movies`.`durations` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `duration` INT NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `movies`.`movies` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `duration_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `duration_id_duration_idx` (`duration_id` ASC) VISIBLE,
+  CONSTRAINT `duration_id_duration`
+    FOREIGN KEY (`duration_id`)
+    REFERENCES `movies`.`durations` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE `movies`.`sessions` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `movie_id` INT NOT NULL,
+  `price` DECIMAL(10,4) NOT NULL,
+  `start_time` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `movie_id_movie_idx` (`movie_id` ASC) VISIBLE,
+  CONSTRAINT `movie_id_movie`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `movies`.`movies` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE `tickets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `num` int NOT NULL,
+  `session_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `session_id_session_idx` (`session_id`),
+  CONSTRAINT `session_id_session` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`)
+) 
+
+INSERT INTO movies.durations (duration) VALUES (60);
+INSERT INTO movies.durations (duration) VALUES (90);
+INSERT INTO movies.durations (duration) VALUES (120);
+
+INSERT INTO movies.movies (name, duration_id) VALUES('NAME_1', 1);
+INSERT INTO movies.movies (name, duration_id) VALUES('NAME_2', 2);
+INSERT INTO movies.movies (name, duration_id) VALUES('NAME_3', 3);
+
+INSERT INTO movies.sessions (movie_id, price, start_time) VALUES(1, 1.1, '2021-01-21 09:01:00');
+INSERT INTO movies.sessions (movie_id, price, start_time) VALUES(2, 1.1, '2021-01-21 12:00:00');
+INSERT INTO movies.sessions (movie_id, price, start_time) VALUES(3, 1.1, '2021-01-21 13:00:00');
+INSERT INTO movies.sessions (movie_id, price, start_time) VALUES(3, 1.1, '2021-01-21 15:02:00');
+INSERT INTO movies.sessions (movie_id, price, start_time) VALUES(2, 1.1, '2021-01-21 15:10:00');
+INSERT INTO movies.sessions (movie_id, price, start_time) VALUES(2, 1.1, '2021-01-21 17:00:00');
+INSERT INTO movies.sessions (movie_id, price, start_time) VALUES(3, 1.1, '2021-01-21 19:00:00');
+
+INSERT INTO tickets (num, session_id) VALUES (1,1);
+INSERT INTO tickets (num, session_id) VALUES (2,2);
+INSERT INTO tickets (num, session_id) VALUES (3,1);
+INSERT INTO tickets (num, session_id) VALUES (4,1);
+INSERT INTO tickets (num, session_id) VALUES (5,1);
+INSERT INTO tickets (num, session_id) VALUES (6,1);
