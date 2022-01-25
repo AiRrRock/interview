@@ -1,0 +1,46 @@
+
+// TASK 1
+SELECT mv1.name, s1.start_time, d1.duration, mv2.name, s2.start_time, d2.duration
+FROM sessions AS s1
+LEFT JOIN movies AS mv1 ON s1.movie_id=mv1.id
+LEFT JOIN durations AS d1 ON mv1.duration_id = d1.id
+LEFT JOIN sessions AS s2 ON s2.start_time BETWEEN s1.start_time AND DATE_ADD(s1.start_time,INTERVAL d1.duration MINUTE)
+LEFT JOIN movies AS mv2 ON s2.movie_id = mv2.id
+LEFT JOIN durations AS d2 ON mv2.duration_id = d2.id 
+WHERE s1.id != s2.id; 
+
+
+// TASK 2
+SELECT s1.id,mv1.name, s1.start_time,d1.duration, s2.id, s2.start_time, TIMEDIFF(s2.start_time, s1.start_time) as mv_interval from sessions as s1
+LEFT JOIN movies AS mv1 ON s1.movie_id = mv1.id
+LEFT JOIN durations AS d1 ON mv1.duration_id = d1.id
+LEFT JOIN sessions AS nextS ON nextS.start_time=(SELECT MIN(start_time) from sessions WHERE start_time > s1.start_time)
+LEFT JOIN sessions as s2 ON s2.start_time > DATE_ADD(s1.start_time,INTERVAL d1.duration+29 MINUTE) and s2.id = nextS.id
+WHERE s2.id is not null
+ORDER BY mv_interval DESC;
+
+//TASK 3
+
+SELECT * FROM (SELECT  m.name, COUNT(t.id), COUNT(t.id)/COUNT(distinct(S.id)), SUM(s.price) as total_cash FROM movies  as m
+LEFT JOIN sessions as s ON s.movie_id = m.id
+LEFT JOIN tickets as t ON t.session_id = s.id
+WHERE t.id is not null
+GROUP BY m.id
+ORDER BY total_cash DESC) as auxiliary
+union
+SELECT 'Total' , COUNT(t.id), COUNT(t.id)/COUNT(distinct(S.id)), SUM(s.price) as total_cash FROM movies  as m
+LEFT JOIN sessions as s ON s.movie_id = m.id
+LEFT JOIN tickets as t ON t.session_id = s.id;
+
+//TASK 4
+
+SELECT    COUNT(t.id), SUM(s.price)
+FROM     sessions as s
+LEFT JOIN tickets as t on s.id = t.session_id 
+WHERE DATE_FORMAT(s.start_time,'%H:%i:%s') BETWEEN '09:00:00' AND '15:00:00' 
+union
+SELECT    COUNT(t.id), SUM(s.price)
+FROM     sessions as s
+LEFT JOIN tickets as t on s.id = t.session_id
+WHERE DATE_FORMAT(s.start_time,'%H:%i:%s') > '15:00:00' 
+GROUP BY FLOOR(time_to_sec(DATE_FORMAT(s.start_time,'%H:%i:%s'))/(3*60*60));
