@@ -1,0 +1,27 @@
+<div>
+    <p></p>
+    <h3>Студент</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Имя</td>
+            <td>Средний бал</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="p in productsPage">
+            <td>{{p.id}}</td>
+            <td>{{p.name}}</td>
+            <td>{{p.mark}}</td>
+            <td>
+                <button class="btn btn-primary" ng-click="navToEditProductPage(p.id)">Изменить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p></p>
+
+
+</div>
